@@ -15,10 +15,10 @@ const app: Application = express();
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "https://ayravel.com",
-    "https://ayravel-admin.vercel.app",
-    "https://ayravel-customer-2jgy.vercel.app",
-    "https://admin.ayravel.com",
+    "https://dressen-customer.vercel.app",
+    "https://dressen-admin-new.vercel.app",
+    "https://dressenbd.com",
+    "https://admin.dressenbd.com",
     "http://localhost:3001",
     "http://localhost:3003",
   ],
