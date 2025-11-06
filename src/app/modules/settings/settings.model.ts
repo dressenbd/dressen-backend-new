@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TSettings } from "./settings.interface";
+import { TSettings, TSliderImage } from "./settings.interface";
 
 const bKashSchema = new Schema(
   {
@@ -33,6 +33,14 @@ const upaySchema = new Schema(
   { _id: false }
 );
 
+const sliderImageSchema = new Schema<TSliderImage>(
+  {
+    image: { type: String, required: true },
+    url: { type: String },
+  },
+  { _id: false }
+);
+
 const settingsSchema = new Schema<TSettings>(
   {
     enableHomepagePopup: { type: Boolean, default: false },
@@ -43,10 +51,10 @@ const settingsSchema = new Schema<TSettings>(
 
     logo: { type: String },
     sliderImages: {
-      type: [String],
+      type: [sliderImageSchema],
       validate: [
-        (val: string[]) => val.length <= 3,
-        "Maximum 3 slider images allowed",
+        (val: TSliderImage[]) => val.length <= 4,
+        "Maximum 4 slider images allowed",
       ],
     },
 

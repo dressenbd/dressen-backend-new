@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.settingsControllers = exports.getDeliveryCharge = exports.getMobileMfs = exports.getContactAndSocial = exports.getSliderImages = exports.getLogo = void 0;
+exports.settingsControllers = exports.deleteBannerSlider = exports.getDeliveryCharge = exports.getMobileMfs = exports.getContactAndSocial = exports.getSliderImages = exports.getLogo = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
@@ -22,8 +22,12 @@ const createSettings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     var _a, _b, _c, _d;
     const files = req.files || {};
     const logo = files["logo"] ? files["logo"][0].path : undefined;
+    // ✅ Handle slider images with URLs
     const sliderImages = files["sliderImages"]
-        ? files["sliderImages"].map((f) => f.path)
+        ? files["sliderImages"].map((f, index) => ({
+            image: f.path,
+            url: req.body[`sliderImageUrl_${index}`] || "" // Optional URL
+        }))
         : [];
     const popupImage = files["popupImage"]
         ? files["popupImage"][0].path
@@ -113,6 +117,17 @@ exports.getDeliveryCharge = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         data: result,
     });
 }));
+// ✅ Delete Banner Slider
+exports.deleteBannerSlider = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { imageUrl } = req.body;
+    const result = yield settings_service_1.settingsServices.deleteBannerSliderFromDB(imageUrl);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Banner slider deleted successfully!",
+        data: result,
+    });
+}));
 // ✅ Update Settings
 const updateSettings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g;
@@ -122,8 +137,26 @@ const updateSettings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     if ((_a = files === null || files === void 0 ? void 0 : files.logo) === null || _a === void 0 ? void 0 : _a.length) {
         updatedData.logo = files.logo[0].path;
     }
-    if ((_b = files === null || files === void 0 ? void 0 : files.sliderImages) === null || _b === void 0 ? void 0 : _b.length) {
-        updatedData.sliderImages = files.sliderImages.map((f) => f.path);
+    // ✅ Handle slider images with position-based replacement
+    if (((_b = files === null || files === void 0 ? void 0 : files.sliderImages) === null || _b === void 0 ? void 0 : _b.length) || req.body.sliderImageUrl_0 !== undefined) {
+        const newFiles = (files === null || files === void 0 ? void 0 : files.sliderImages) || [];
+        let fileIndex = 0;
+        const sliderImages = [];
+        // Process up to 4 positions
+        for (let i = 0; i < 4; i++) {
+            const existingBanner = req.body[`existingBanner_${i}`];
+            const url = req.body[`sliderImageUrl_${i}`] || "";
+            if (existingBanner) {
+                // Keep existing banner
+                sliderImages.push({ image: existingBanner, url });
+            }
+            else if (newFiles[fileIndex]) {
+                // Use new uploaded file
+                sliderImages.push({ image: newFiles[fileIndex].path, url });
+                fileIndex++;
+            }
+        }
+        updatedData.sliderImages = sliderImages.filter(item => item.image);
     }
     if ((_c = files === null || files === void 0 ? void 0 : files.popupImage) === null || _c === void 0 ? void 0 : _c.length) {
         updatedData.popupImage = files.popupImage[0].path;
@@ -199,4 +232,5 @@ exports.settingsControllers = {
     getContactAndSocial: exports.getContactAndSocial,
     getMobileMfs: exports.getMobileMfs,
     getDeliveryCharge: exports.getDeliveryCharge,
+    deleteBannerSlider: exports.deleteBannerSlider,
 };

@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+const sliderImageSchema = z.object({
+  image: z.string(),
+  url: z.string().optional(),
+});
+
 export const createSettingsValidationSchema = z.object({
   body: z.object({
     enableHomepagePopup: z.boolean().optional(),
@@ -47,6 +52,7 @@ export const createSettingsValidationSchema = z.object({
       })
       .optional(),
     deliveryCharge: z.number().optional(),
+    sliderImages: z.array(sliderImageSchema).max(4).optional(),
     contactAndSocial: z
       .object({
         address: z.string().optional(),

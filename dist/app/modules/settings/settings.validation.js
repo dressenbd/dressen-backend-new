@@ -2,6 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSettingsValidationSchema = void 0;
 const zod_1 = require("zod");
+const sliderImageSchema = zod_1.z.object({
+    image: zod_1.z.string(),
+    url: zod_1.z.string().optional(),
+});
 exports.createSettingsValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
         enableHomepagePopup: zod_1.z.boolean().optional(),
@@ -49,6 +53,7 @@ exports.createSettingsValidationSchema = zod_1.z.object({
         })
             .optional(),
         deliveryCharge: zod_1.z.number().optional(),
+        sliderImages: zod_1.z.array(sliderImageSchema).max(4).optional(),
         contactAndSocial: zod_1.z
             .object({
             address: zod_1.z.string().optional(),

@@ -18,6 +18,10 @@ const upaySchema = new mongoose_1.Schema({
     upayLogo: { type: String },
     upayNumber: { type: String },
 }, { _id: false });
+const sliderImageSchema = new mongoose_1.Schema({
+    image: { type: String, required: true },
+    url: { type: String },
+}, { _id: false });
 const settingsSchema = new mongoose_1.Schema({
     enableHomepagePopup: { type: Boolean, default: false },
     popupTitle: { type: String },
@@ -26,10 +30,10 @@ const settingsSchema = new mongoose_1.Schema({
     popupImage: { type: String },
     logo: { type: String },
     sliderImages: {
-        type: [String],
+        type: [sliderImageSchema],
         validate: [
-            (val) => val.length <= 3,
-            "Maximum 3 slider images allowed",
+            (val) => val.length <= 4,
+            "Maximum 4 slider images allowed",
         ],
     },
     privacyPolicy: {

@@ -27,6 +27,10 @@ const createSettingsOnDB = (payload) => __awaiter(void 0, void 0, void 0, functi
 // ✅ Get All Settings (Only one record)
 const getSettingsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield settings_model_1.SettingsModel.findOne();
+    // Fix corrupted slider images data
+    if (result === null || result === void 0 ? void 0 : result.sliderImages) {
+        result.sliderImages = result.sliderImages.filter(img => img && typeof img === 'object' && img.image && typeof img.image === 'string');
+    }
     return result;
 });
 // ✅ Get Logo Only
@@ -192,23 +196,20 @@ const updateSettingsOnDB = (updatedData) => __awaiter(void 0, void 0, void 0, fu
     const settings = yield settings_model_1.SettingsModel.findOne();
     if (!settings)
         throw new handleAppError_1.default(404, "Settings not found!");
-    // ✅ ==== FIX FOR sliderImages START ====
-    // This new logic correctly handles additions, deletions, and the 3-image limit.
-    const newUploadedImages = updatedData.sliderImages || []; // From req.files
-    const imagesToDelete = updatedData.deletedSliderImages || [];
-    const currentImages = settings.sliderImages || [];
-    // 1. Start with current images and remove any marked for deletion
-    let imagesAfterDeletion = currentImages.filter((img) => !imagesToDelete.includes(img));
-    // 2. Add the new images to the end of the list
-    let combinedImages = [...imagesAfterDeletion, ...newUploadedImages];
-    // 3. Enforce limit (max 3) by taking the *last* 3 items
-    // This ensures newly uploaded images are prioritized.
-    updatedData.sliderImages = combinedImages.slice(-3);
-    // 4. Delete the specified images from Cloudinary
-    if (imagesToDelete.length > 0) {
-        yield Promise.all(imagesToDelete.map((img) => (0, cloudinary_config_1.deleteImageFromCLoudinary)(img)));
+    // ✅ ==== CRITICAL FIX FOR sliderImages START ====
+    // Handle position-based replacement properly
+    if (updatedData.sliderImages !== undefined) {
+        // Frontend sends the COMPLETE new array - just use it
+        // No need to merge with existing - frontend handles that
+        // Delete any images that are being replaced
+        const imagesToDelete = updatedData.deletedSliderImages || [];
+        if (imagesToDelete.length > 0) {
+            yield Promise.all(imagesToDelete.map((img) => (0, cloudinary_config_1.deleteImageFromCLoudinary)(img)));
+        }
+        // Use the new slider images array as-is (frontend built it correctly)
+        // This prevents duplication and maintains proper positions
     }
-    // ✅ ==== FIX FOR sliderImages END ====
+    // ✅ ==== CRITICAL FIX FOR sliderImages END ====
     // ✅ Deep merge for mobileMfs (This logic is correct)
     // if (updatedData.mobileMfs) {
     //   updatedData.mobileMfs = {
@@ -274,10 +275,11 @@ const updateSettingsOnDB = (updatedData) => __awaiter(void 0, void 0, void 0, fu
     if (updatedData.contactAndSocial) {
         updatedData.contactAndSocial = Object.assign(Object.assign({}, (settings.contactAndSocial || {})), (updatedData.contactAndSocial || {}));
     }
-    // ✅ Update document
-    const result = yield settings_model_1.SettingsModel.findOneAndUpdate({}, updatedData, {
+    // ✅ Update document - Use $set to replace entire fields
+    const result = yield settings_model_1.SettingsModel.findOneAndUpdate({}, { $set: updatedData }, {
         new: true,
         runValidators: true,
+        upsert: true
     });
     return result;
 });
@@ -299,6 +301,20 @@ const updateMfsSettingsOnDB = (updatedData) => __awaiter(void 0, void 0, void 0,
     const result = yield settings_model_1.SettingsModel.findOneAndUpdate({}, { $set: { mobileMfs: mergedMfs } }, { new: true, runValidators: true });
     return result;
 });
+// ✅ Delete Banner Slider
+const deleteBannerSliderFromDB = (imageUrl) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const settings = yield settings_model_1.SettingsModel.findOne();
+    if (!settings)
+        throw new handleAppError_1.default(404, "Settings not found!");
+    // Remove the banner from array
+    const updatedSliders = ((_a = settings.sliderImages) === null || _a === void 0 ? void 0 : _a.filter((slider) => slider.image !== imageUrl)) || [];
+    // Delete from Cloudinary
+    yield (0, cloudinary_config_1.deleteImageFromCLoudinary)(imageUrl);
+    // Update database
+    const result = yield settings_model_1.SettingsModel.findOneAndUpdate({}, { sliderImages: updatedSliders }, { new: true, runValidators: true });
+    return result;
+});
 exports.settingsServices = {
     createSettingsOnDB,
     getSettingsFromDB,
@@ -309,4 +325,5 @@ exports.settingsServices = {
     getDeliveryChargeFromDB,
     updateSettingsOnDB,
     updateMfsSettingsOnDB,
+    deleteBannerSliderFromDB,
 };

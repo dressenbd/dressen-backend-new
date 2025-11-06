@@ -15,6 +15,14 @@ const createSettingsOnDB = async (payload: TSettings) => {
 // ✅ Get All Settings (Only one record)
 const getSettingsFromDB = async () => {
   const result = await SettingsModel.findOne();
+  
+  // Fix corrupted slider images data
+  if (result?.sliderImages) {
+    result.sliderImages = result.sliderImages.filter(img => 
+      img && typeof img === 'object' && img.image && typeof img.image === 'string'
+    );
+  }
+  
   return result;
 };
 
@@ -204,32 +212,24 @@ const updateSettingsOnDB = async (
   const settings = await SettingsModel.findOne();
   if (!settings) throw new AppError(404, "Settings not found!");
 
-  // ✅ ==== FIX FOR sliderImages START ====
-  // This new logic correctly handles additions, deletions, and the 3-image limit.
-
-  const newUploadedImages = updatedData.sliderImages || []; // From req.files
-  const imagesToDelete = updatedData.deletedSliderImages || [];
-  const currentImages = settings.sliderImages || [];
-
-  // 1. Start with current images and remove any marked for deletion
-  let imagesAfterDeletion = currentImages.filter(
-    (img) => !imagesToDelete.includes(img)
-  );
-
-  // 2. Add the new images to the end of the list
-  let combinedImages = [...imagesAfterDeletion, ...newUploadedImages];
-
-  // 3. Enforce limit (max 3) by taking the *last* 3 items
-  // This ensures newly uploaded images are prioritized.
-  updatedData.sliderImages = combinedImages.slice(-3);
-
-  // 4. Delete the specified images from Cloudinary
-  if (imagesToDelete.length > 0) {
-    await Promise.all(
-      imagesToDelete.map((img: string) => deleteImageFromCLoudinary(img))
-    );
+  // ✅ ==== CRITICAL FIX FOR sliderImages START ====
+  // Handle position-based replacement properly
+  if (updatedData.sliderImages !== undefined) {
+    // Frontend sends the COMPLETE new array - just use it
+    // No need to merge with existing - frontend handles that
+    
+    // Delete any images that are being replaced
+    const imagesToDelete = updatedData.deletedSliderImages || [];
+    if (imagesToDelete.length > 0) {
+      await Promise.all(
+        imagesToDelete.map((img: string) => deleteImageFromCLoudinary(img))
+      );
+    }
+    
+    // Use the new slider images array as-is (frontend built it correctly)
+    // This prevents duplication and maintains proper positions
   }
-  // ✅ ==== FIX FOR sliderImages END ====
+  // ✅ ==== CRITICAL FIX FOR sliderImages END ====
 
   // ✅ Deep merge for mobileMfs (This logic is correct)
   // if (updatedData.mobileMfs) {
@@ -310,11 +310,16 @@ const updateSettingsOnDB = async (
     };
   }
 
-  // ✅ Update document
-  const result = await SettingsModel.findOneAndUpdate({}, updatedData, {
-    new: true,
-    runValidators: true,
-  });
+  // ✅ Update document - Use $set to replace entire fields
+  const result = await SettingsModel.findOneAndUpdate(
+    {},
+    { $set: updatedData },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true
+    }
+  );
 
   return result;
 };
@@ -357,6 +362,29 @@ const updateMfsSettingsOnDB = async (updatedData: any) => {
 
   return result;
 };
+// ✅ Delete Banner Slider
+const deleteBannerSliderFromDB = async (imageUrl: string) => {
+  const settings = await SettingsModel.findOne();
+  if (!settings) throw new AppError(404, "Settings not found!");
+
+  // Remove the banner from array
+  const updatedSliders = settings.sliderImages?.filter(
+    (slider) => slider.image !== imageUrl
+  ) || [];
+
+  // Delete from Cloudinary
+  await deleteImageFromCLoudinary(imageUrl);
+
+  // Update database
+  const result = await SettingsModel.findOneAndUpdate(
+    {},
+    { sliderImages: updatedSliders },
+    { new: true, runValidators: true }
+  );
+
+  return result;
+};
+
 export const settingsServices = {
   createSettingsOnDB,
   getSettingsFromDB,
@@ -367,4 +395,5 @@ export const settingsServices = {
   getDeliveryChargeFromDB,
   updateSettingsOnDB,
   updateMfsSettingsOnDB,
+  deleteBannerSliderFromDB,
 };
