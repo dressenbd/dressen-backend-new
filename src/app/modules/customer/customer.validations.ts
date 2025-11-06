@@ -141,6 +141,19 @@ const updateOrdersZodSchema = z
   })
   .partial();
 
+// Wishlist Operations Validation
+export const addToWishlistZodSchema = z.object({
+  productId: z.string({
+    error: () => "Product ID is required!",
+  }),
+});
+
+export const removeFromWishlistZodSchema = z.object({
+  productId: z.string({
+    error: () => "Product ID is required!",
+  }),
+});
+
 // Update Customer Validation
 export const updateCustomerZodSchema = z.object({
   userId: z.string().optional(),

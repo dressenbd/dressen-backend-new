@@ -14,4 +14,9 @@ router.get("/:id", customer_controller_1.customerControllers.getSingleCustomer);
 router.get("/my-info/:id", customer_controller_1.customerControllers.getMyCustomerInfo);
 router.post("/create-customer", (0, validateRequest_1.default)(customer_validations_1.createCustomerZodSchema), customer_controller_1.customerControllers.createCustomer);
 router.patch("/update-customer/:id", (0, validateRequest_1.default)(customer_validations_1.updateCustomerZodSchema), customer_controller_1.customerControllers.updateCustomer);
+// Wishlist routes
+router.get("/wishlist/:userId", customer_controller_1.customerControllers.getWishlist);
+router.post("/wishlist/add/:userId", (0, validateRequest_1.default)(customer_validations_1.addToWishlistZodSchema), customer_controller_1.customerControllers.addToWishlist);
+router.delete("/wishlist/remove/:userId", (0, validateRequest_1.default)(customer_validations_1.removeFromWishlistZodSchema), customer_controller_1.customerControllers.removeFromWishlist);
+router.delete("/wishlist/clear/:userId", customer_controller_1.customerControllers.clearWishlist);
 exports.CustomerRoutes = router;

@@ -86,6 +86,16 @@ const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getUserByEmail = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.params.email;
+    const result = yield user_service_1.UserServices.getUserByEmailFromDB(email);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "User retrieved successfully!",
+        data: result,
+    });
+}));
 exports.UserControllers = {
     getSingleUser,
     getAllUser,
@@ -94,4 +104,5 @@ exports.UserControllers = {
     getAllVendorUser,
     updateUser,
     deleteUser,
+    getUserByEmail,
 };

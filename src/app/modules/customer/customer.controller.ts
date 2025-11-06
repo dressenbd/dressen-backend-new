@@ -66,10 +66,64 @@ const getMyCustomerInfo = catchAsync(async (req, res) => {
   });
 });
 
+const getWishlist = catchAsync(async (req, res) => {
+  const userId = req.params.userId;
+  const result = await customerServices.getWishlistFromDB(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Wishlist retrieved successfully!",
+    data: result,
+  });
+});
+
+const addToWishlist = catchAsync(async (req, res) => {
+  const userId = req.params.userId;
+  const { productId } = req.body;
+  const result = await customerServices.addToWishlistDB(userId, productId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Product added to wishlist!",
+    data: result,
+  });
+});
+
+const removeFromWishlist = catchAsync(async (req, res) => {
+  const userId = req.params.userId;
+  const { productId } = req.body;
+  const result = await customerServices.removeFromWishlistDB(userId, productId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Product removed from wishlist!",
+    data: result,
+  });
+});
+
+const clearWishlist = catchAsync(async (req, res) => {
+  const userId = req.params.userId;
+  const result = await customerServices.clearWishlistDB(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Wishlist cleared successfully!",
+    data: result,
+  });
+});
+
 export const customerControllers = {
   createCustomer,
   getSingleCustomer,
   getAllCustomer,
   updateCustomer,
   getMyCustomerInfo,
+  getWishlist,
+  addToWishlist,
+  removeFromWishlist,
+  clearWishlist,
 };

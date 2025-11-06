@@ -154,6 +154,16 @@ const delteUserFromDB = async (id: string) => {
   return result;
 };
 
+const getUserByEmailFromDB = async (email: string) => {
+  const result = await UserModel.findOne({ email });
+  
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found with this email!");
+  }
+  
+  return result;
+};
+
 export const UserServices = {
   getAllUserFromDB,
   getSingleUserFromDB,
@@ -162,4 +172,5 @@ export const UserServices = {
   getAdminProfileFromDB,
   updateUserOnDB,
   delteUserFromDB,
+  getUserByEmailFromDB,
 };

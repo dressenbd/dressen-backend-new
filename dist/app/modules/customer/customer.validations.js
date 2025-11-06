@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCustomerZodSchema = exports.createCustomerZodSchema = void 0;
+exports.updateCustomerZodSchema = exports.removeFromWishlistZodSchema = exports.addToWishlistZodSchema = exports.createCustomerZodSchema = void 0;
 const zod_1 = require("zod");
 // Address Validation
 const addressZodSchema = zod_1.z.object({
@@ -129,6 +129,17 @@ const updateOrdersZodSchema = zod_1.z
         .optional(),
 })
     .partial();
+// Wishlist Operations Validation
+exports.addToWishlistZodSchema = zod_1.z.object({
+    productId: zod_1.z.string({
+        error: () => "Product ID is required!",
+    }),
+});
+exports.removeFromWishlistZodSchema = zod_1.z.object({
+    productId: zod_1.z.string({
+        error: () => "Product ID is required!",
+    }),
+});
 // Update Customer Validation
 exports.updateCustomerZodSchema = zod_1.z.object({
     userId: zod_1.z.string().optional(),

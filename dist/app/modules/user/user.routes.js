@@ -27,6 +27,7 @@ user_controller_1.UserControllers.getAllVendorUser);
 router.get("/admins/:id", 
 // auth(userRole["super-admin"]),
 user_controller_1.UserControllers.getSuperAdmin);
+router.get("/email/:email", user_controller_1.UserControllers.getUserByEmail);
 router.get("/:id", user_controller_1.UserControllers.getSingleUser);
 router.patch("/:id", user_controller_1.UserControllers.updateUser);
 router.delete("/:id", user_controller_1.UserControllers.deleteUser);

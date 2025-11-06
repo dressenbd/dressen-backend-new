@@ -36,6 +36,8 @@ router.get(
   UserControllers.getSuperAdmin
 );
 
+router.get("/email/:email", UserControllers.getUserByEmail);
+
 router.get("/:id", UserControllers.getSingleUser);
 
 router.patch("/:id", UserControllers.updateUser);

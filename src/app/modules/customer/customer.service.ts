@@ -60,10 +60,94 @@ const getMyCustomerInfoFromDB = async (id: string) => {
   return result;
 };
 
+const getWishlistFromDB = async (userId: string) => {
+  const result = await CustomerModel.findOne({ userId }).populate({
+    path: 'wishlist',
+    select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+  });
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Wrong userId!");
+  }
+  return result.wishlist;
+};
+
+const addToWishlistDB = async (userId: string, productId: string) => {
+  // Check if customer exists first
+  const existingCustomer = await CustomerModel.findOne({ userId });
+  if (!existingCustomer) {
+    throw new AppError(httpStatus.NOT_FOUND, "Wrong userId!");
+  }
+  
+  // Check if product already in wishlist
+  if (existingCustomer.wishlist.includes(productId as any)) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Product already exists in wishlist!");
+  }
+  
+  const result = await CustomerModel.findOneAndUpdate(
+    { userId },
+    { $addToSet: { wishlist: productId } },
+    { new: true }
+  ).populate({
+    path: 'wishlist',
+    select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+  });
+  
+  return result!.wishlist;
+};
+
+const removeFromWishlistDB = async (userId: string, productId: string) => {
+  // First check if customer exists and product is in wishlist
+  const existingCustomer = await CustomerModel.findOne({ userId });
+  if (!existingCustomer) {
+    throw new AppError(httpStatus.NOT_FOUND, "Wrong userId!");
+  }
+  
+  // Check if product exists in wishlist
+  if (!existingCustomer.wishlist.includes(productId as any)) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Product not found in wishlist!");
+  }
+  
+  const result = await CustomerModel.findOneAndUpdate(
+    { userId },
+    { $pull: { wishlist: productId } },
+    { new: true }
+  ).populate({
+    path: 'wishlist',
+    select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+  });
+  
+  return result!.wishlist;
+};
+
+const clearWishlistDB = async (userId: string) => {
+  // Check if customer exists first
+  const existingCustomer = await CustomerModel.findOne({ userId });
+  if (!existingCustomer) {
+    throw new AppError(httpStatus.NOT_FOUND, "Wrong userId!");
+  }
+  
+  // Check if wishlist is already empty
+  if (existingCustomer.wishlist.length === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Wishlist is already empty!");
+  }
+  
+  const result = await CustomerModel.findOneAndUpdate(
+    { userId },
+    { $set: { wishlist: [] } },
+    { new: true }
+  );
+  
+  return result!.wishlist;
+};
+
 export const customerServices = {
   createCustomerOnDB,
   getSingleCustomerFromDB,
   getAllCustomerFromDB,
   updateCustomerOnDB,
   getMyCustomerInfoFromDB,
+  getWishlistFromDB,
+  addToWishlistDB,
+  removeFromWishlistDB,
+  clearWishlistDB,
 };
