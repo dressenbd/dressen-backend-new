@@ -21,8 +21,7 @@ export type TTotalAmount = {
 };
 
 export type TCustomerInfo = {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email?: string;
   phone: string;
   address: string;
