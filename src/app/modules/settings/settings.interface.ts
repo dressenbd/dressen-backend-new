@@ -18,6 +18,11 @@ export type TUpay = {
   upayNumber?: string;
 };
 
+export type TSliderImage = {
+  image: string;
+  url?: string;
+};
+
 export type TSettings = {
   enableHomepagePopup: boolean;
   popupTitle?: string;
@@ -26,7 +31,7 @@ export type TSettings = {
   popupImage?: string;
 
   logo?: string;
-  sliderImages?: string[]; // max 3
+  sliderImages?: TSliderImage[]; // max 3
 
   privacyPolicy?: {
     title: string;

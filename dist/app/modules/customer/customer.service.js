@@ -60,10 +60,69 @@ const getMyCustomerInfoFromDB = (id) => __awaiter(void 0, void 0, void 0, functi
     }
     return result;
 });
+const getWishlistFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield customer_model_1.CustomerModel.findOne({ userId }).populate({
+        path: 'wishlist',
+        select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+    });
+    if (!result) {
+        throw new handleAppError_1.default(http_status_1.default.NOT_FOUND, "Wrong userId!");
+    }
+    return result.wishlist;
+});
+const addToWishlistDB = (userId, productId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Check if customer exists first
+    const existingCustomer = yield customer_model_1.CustomerModel.findOne({ userId });
+    if (!existingCustomer) {
+        throw new handleAppError_1.default(http_status_1.default.NOT_FOUND, "Wrong userId!");
+    }
+    // Check if product already in wishlist
+    if (existingCustomer.wishlist.includes(productId)) {
+        throw new handleAppError_1.default(http_status_1.default.BAD_REQUEST, "Product already exists in wishlist!");
+    }
+    const result = yield customer_model_1.CustomerModel.findOneAndUpdate({ userId }, { $addToSet: { wishlist: productId } }, { new: true }).populate({
+        path: 'wishlist',
+        select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+    });
+    return result.wishlist;
+});
+const removeFromWishlistDB = (userId, productId) => __awaiter(void 0, void 0, void 0, function* () {
+    // First check if customer exists and product is in wishlist
+    const existingCustomer = yield customer_model_1.CustomerModel.findOne({ userId });
+    if (!existingCustomer) {
+        throw new handleAppError_1.default(http_status_1.default.NOT_FOUND, "Wrong userId!");
+    }
+    // Check if product exists in wishlist
+    if (!existingCustomer.wishlist.includes(productId)) {
+        throw new handleAppError_1.default(http_status_1.default.BAD_REQUEST, "Product not found in wishlist!");
+    }
+    const result = yield customer_model_1.CustomerModel.findOneAndUpdate({ userId }, { $pull: { wishlist: productId } }, { new: true }).populate({
+        path: 'wishlist',
+        select: 'description.name productInfo.price productInfo.salePrice featuredImg gallery productInfo.discount'
+    });
+    return result.wishlist;
+});
+const clearWishlistDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Check if customer exists first
+    const existingCustomer = yield customer_model_1.CustomerModel.findOne({ userId });
+    if (!existingCustomer) {
+        throw new handleAppError_1.default(http_status_1.default.NOT_FOUND, "Wrong userId!");
+    }
+    // Check if wishlist is already empty
+    if (existingCustomer.wishlist.length === 0) {
+        throw new handleAppError_1.default(http_status_1.default.BAD_REQUEST, "Wishlist is already empty!");
+    }
+    const result = yield customer_model_1.CustomerModel.findOneAndUpdate({ userId }, { $set: { wishlist: [] } }, { new: true });
+    return result.wishlist;
+});
 exports.customerServices = {
     createCustomerOnDB,
     getSingleCustomerFromDB,
     getAllCustomerFromDB,
     updateCustomerOnDB,
     getMyCustomerInfoFromDB,
+    getWishlistFromDB,
+    addToWishlistDB,
+    removeFromWishlistDB,
+    clearWishlistDB,
 };

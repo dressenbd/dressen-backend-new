@@ -74,8 +74,7 @@ const totalAmountSchema = new Schema<TTotalAmount>(
 // Customer Info Schema
 const customerInfoSchema = new Schema<TCustomerInfo>(
   {
-    firstName: { type: String, required: [true, "First name is required!"] },
-    lastName: { type: String, required: [true, "Last name is required!"] },
+    fullName: { type: String, required: [true, "Full name is required!"] },
     email: { type: String },
     phone: { type: String, required: [true, "Phone number is required!"] },
     address: { type: String, required: [true, "Address is required!"] },

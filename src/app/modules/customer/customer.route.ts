@@ -4,6 +4,8 @@ import { customerControllers } from "./customer.controller";
 import {
   createCustomerZodSchema,
   updateCustomerZodSchema,
+  addToWishlistZodSchema,
+  removeFromWishlistZodSchema,
 } from "./customer.validations";
 
 const router = express.Router();
@@ -25,5 +27,19 @@ router.patch(
   validateRequest(updateCustomerZodSchema),
   customerControllers.updateCustomer
 );
+
+// Wishlist routes
+router.get("/wishlist/:userId", customerControllers.getWishlist);
+router.post(
+  "/wishlist/add/:userId",
+  validateRequest(addToWishlistZodSchema),
+  customerControllers.addToWishlist
+);
+router.delete(
+  "/wishlist/remove/:userId",
+  validateRequest(removeFromWishlistZodSchema),
+  customerControllers.removeFromWishlist
+);
+router.delete("/wishlist/clear/:userId", customerControllers.clearWishlist);
 
 export const CustomerRoutes = router;

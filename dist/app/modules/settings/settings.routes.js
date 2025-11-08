@@ -33,4 +33,5 @@ router.patch("/mfs-update", multer_config_1.multerUpload.fields([
     { name: "rocketLogo", maxCount: 1 },
     { name: "upayLogo", maxCount: 1 },
 ]), settings_controller_1.settingsControllers.updateMfsSettings);
+router.delete("/banner-slider", settings_controller_1.settingsControllers.deleteBannerSlider);
 exports.settingsRoutes = router;

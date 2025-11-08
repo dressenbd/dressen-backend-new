@@ -131,15 +131,12 @@ const productInfoSchema = new Schema<TProductInfo>(
     },
     width: {
       type: String,
-      required: [true, "Width is Required!"],
     },
     height: {
       type: String,
-      required: [true, "Height is Required!"],
     },
     length: {
       type: String,
-      required: [true, "Length is Required!"],
     },
     isDigital: {
       type: Boolean,

@@ -34,5 +34,6 @@ router.patch(
   ]),
   settingsControllers.updateMfsSettings
 );
+router.delete("/banner-slider", settingsControllers.deleteBannerSlider);
 
 export const settingsRoutes = router;

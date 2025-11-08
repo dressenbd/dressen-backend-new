@@ -67,10 +67,56 @@ const getMyCustomerInfo = (0, catchAsync_1.default)((req, res) => __awaiter(void
         data: result,
     });
 }));
+const getWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    const result = yield customer_service_1.customerServices.getWishlistFromDB(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Wishlist retrieved successfully!",
+        data: result,
+    });
+}));
+const addToWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    const { productId } = req.body;
+    const result = yield customer_service_1.customerServices.addToWishlistDB(userId, productId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Product added to wishlist!",
+        data: result,
+    });
+}));
+const removeFromWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    const { productId } = req.body;
+    const result = yield customer_service_1.customerServices.removeFromWishlistDB(userId, productId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Product removed from wishlist!",
+        data: result,
+    });
+}));
+const clearWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    const result = yield customer_service_1.customerServices.clearWishlistDB(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Wishlist cleared successfully!",
+        data: result,
+    });
+}));
 exports.customerControllers = {
     createCustomer,
     getSingleCustomer,
     getAllCustomer,
     updateCustomer,
     getMyCustomerInfo,
+    getWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    clearWishlist,
 };

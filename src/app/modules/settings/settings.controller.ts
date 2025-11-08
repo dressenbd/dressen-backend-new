@@ -9,8 +9,12 @@ const createSettings = catchAsync(async (req, res) => {
     (req.files as { [fieldname: string]: Express.Multer.File[] }) || {};
 
   const logo = files["logo"] ? files["logo"][0].path : undefined;
+  // ✅ Handle slider images with URLs
   const sliderImages = files["sliderImages"]
-    ? files["sliderImages"].map((f) => f.path)
+    ? files["sliderImages"].map((f, index) => ({
+        image: f.path,
+        url: req.body[`sliderImageUrl_${index}`] || "" // Optional URL
+      }))
     : [];
   const popupImage = files["popupImage"]
     ? files["popupImage"][0].path
@@ -128,6 +132,18 @@ export const getDeliveryCharge = catchAsync(async (req, res) => {
   });
 });
 
+// ✅ Delete Banner Slider
+export const deleteBannerSlider = catchAsync(async (req, res) => {
+  const { imageUrl } = req.body;
+  const result = await settingsServices.deleteBannerSliderFromDB(imageUrl);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Banner slider deleted successfully!",
+    data: result,
+  });
+});
+
 // ✅ Update Settings
 
 const updateSettings = catchAsync(async (req, res) => {
@@ -138,8 +154,29 @@ const updateSettings = catchAsync(async (req, res) => {
   if (files?.logo?.length) {
     updatedData.logo = files.logo[0].path;
   }
-  if (files?.sliderImages?.length) {
-    updatedData.sliderImages = files.sliderImages.map((f) => f.path);
+  
+  // ✅ Handle slider images with position-based replacement
+  if (files?.sliderImages?.length || req.body.sliderImageUrl_0 !== undefined) {
+    const newFiles = files?.sliderImages || [];
+    let fileIndex = 0;
+    const sliderImages = [];
+
+    // Process up to 4 positions
+    for (let i = 0; i < 4; i++) {
+      const existingBanner = req.body[`existingBanner_${i}`];
+      const url = req.body[`sliderImageUrl_${i}`] || "";
+      
+      if (existingBanner) {
+        // Keep existing banner
+        sliderImages.push({ image: existingBanner, url });
+      } else if (newFiles[fileIndex]) {
+        // Use new uploaded file
+        sliderImages.push({ image: newFiles[fileIndex].path, url });
+        fileIndex++;
+      }
+    }
+    
+    updatedData.sliderImages = sliderImages.filter(item => item.image);
   }
   if (files?.popupImage?.length) {
     updatedData.popupImage = files.popupImage[0].path;
@@ -249,4 +286,5 @@ export const settingsControllers = {
   getContactAndSocial,
   getMobileMfs,
   getDeliveryCharge,
+  deleteBannerSlider,
 };

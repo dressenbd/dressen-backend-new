@@ -90,6 +90,18 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+const getUserByEmail = catchAsync(async (req, res) => {
+  const email = req.params.email;
+  const result = await UserServices.getUserByEmailFromDB(email);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User retrieved successfully!",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   getSingleUser,
   getAllUser,
@@ -98,4 +110,5 @@ export const UserControllers = {
   getAllVendorUser,
   updateUser,
   deleteUser,
+  getUserByEmail,
 };

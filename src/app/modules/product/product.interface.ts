@@ -36,9 +36,9 @@ export type TProductInfo = {
   discount?: number;
   quantity: number;
   sku: string;
-  width: string;
-  height: string;
-  length: string;
+  width?: string;
+  height?: string;
+  length?: string;
   isDigital?: boolean;
   digital?: string;
   isExternal?: boolean;

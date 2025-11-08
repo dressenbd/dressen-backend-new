@@ -142,6 +142,13 @@ const delteUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.UserModel.findByIdAndDelete(id);
     return result;
 });
+const getUserByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.UserModel.findOne({ email });
+    if (!result) {
+        throw new handleAppError_1.default(http_status_1.default.NOT_FOUND, "User not found with this email!");
+    }
+    return result;
+});
 exports.UserServices = {
     getAllUserFromDB,
     getSingleUserFromDB,
@@ -150,4 +157,5 @@ exports.UserServices = {
     getAdminProfileFromDB,
     updateUserOnDB,
     delteUserFromDB,
+    getUserByEmailFromDB,
 };

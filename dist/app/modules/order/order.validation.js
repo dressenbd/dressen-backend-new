@@ -45,14 +45,9 @@ const commissionZodSchema = zod_1.z.object({
 });
 // Customer Info Validation
 const customerInfoZodSchema = zod_1.z.object({
-    firstName: zod_1.z.string({
+    fullName: zod_1.z.string({
         error: (issue) => issue.input === undefined
-            ? "First name is required!"
-            : "Must be a string!",
-    }),
-    lastName: zod_1.z.string({
-        error: (issue) => issue.input === undefined
-            ? "Last name is required!"
+            ? "Full name is required!"
             : "Must be a string!",
     }),
     email: zod_1.z.string().email().optional(),
