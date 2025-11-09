@@ -20,6 +20,8 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const user_const_1 = require("../user/user.const");
 const auth_controller_1 = require("./auth.controller");
 const auth_validations_1 = require("./auth.validations");
+const admin_password_controller_1 = require("./admin-password.controller");
+const admin_password_validation_1 = require("./admin-password.validation");
 const router = express_1.default.Router();
 // Individual routes
 router.post("/register", (0, validateRequest_1.default)(auth_validations_1.AuthValidations.registerUser), auth_controller_1.AuthController.registerUser);
@@ -41,4 +43,6 @@ router.get("/google", (req, res, next) => __awaiter(void 0, void 0, void 0, func
 }));
 router.get("/google/callback", passport_1.default.authenticate("google", { failureRedirect: "/login" }), auth_controller_1.AuthController.googleCallbackController);
 router.get("/me", (0, checkAuth_1.checkAuth)(...Object.values(user_const_1.userRoles)), auth_controller_1.AuthController.gatMe);
+// Admin-specific password change route
+router.post("/admin/change-password", (0, checkAuth_1.checkAuth)("admin", "super-admin"), (0, validateRequest_1.default)(admin_password_validation_1.AdminPasswordValidations.changeAdminPasswordSchema), admin_password_controller_1.AdminPasswordController.changeAdminPassword);
 exports.AuthRoutes = router;
