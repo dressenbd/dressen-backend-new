@@ -5,6 +5,8 @@ import validateRequest from "../../middlewares/validateRequest";
 import { userRoles } from "../user/user.const";
 import { AuthController } from "./auth.controller";
 import { AuthValidations } from "./auth.validations";
+import { AdminPasswordController } from "./admin-password.controller";
+import { AdminPasswordValidations } from "./admin-password.validation";
 
 const router = express.Router();
 
@@ -53,5 +55,13 @@ router.get(
 );
 
 router.get("/me", checkAuth(...Object.values(userRoles)), AuthController.gatMe);
+
+// Admin-specific password change route
+router.post(
+  "/admin/change-password",
+  checkAuth("admin", "super-admin"),
+  validateRequest(AdminPasswordValidations.changeAdminPasswordSchema),
+  AdminPasswordController.changeAdminPassword
+);
 
 export const AuthRoutes = router;

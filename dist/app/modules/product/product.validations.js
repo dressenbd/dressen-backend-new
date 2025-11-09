@@ -80,15 +80,9 @@ const productInfoZodSchema = zod_1.z.object({
     sku: zod_1.z.string({
         error: () => "SKU is required!",
     }),
-    width: zod_1.z.string({
-        error: () => "Width is required!",
-    }),
-    height: zod_1.z.string({
-        error: () => "Height is required!",
-    }),
-    length: zod_1.z.string({
-        error: () => "Length is required!",
-    }),
+    width: zod_1.z.string().optional(),
+    height: zod_1.z.string().optional(),
+    length: zod_1.z.string().optional(),
     isDigital: zod_1.z.boolean().optional(),
     digital: zod_1.z.string().optional(),
     isExternal: zod_1.z.boolean().optional(),
