@@ -95,4 +95,11 @@ export type TOrder = {
   paymentInfo: TPaymentInfo | "cash-on";
   totalAmount: number;
   orderNote?: string;
+  adminMetadata?: {
+    createdBy?: Types.ObjectId;
+    orderSource?: string;
+    adminNotes?: string;
+    customerType?: string;
+    assignedSR?: Types.ObjectId;
+  };
 };

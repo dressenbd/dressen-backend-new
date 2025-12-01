@@ -365,6 +365,27 @@ const orderSchema = new Schema<TOrder>(
       required: true,
     },
     orderNote: { type: String },
+    // Admin metadata for orders created by admin
+    adminMetadata: {
+      createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+      orderSource: {
+        type: String,
+        enum: ["phone", "walk-in", "online", "whatsapp", "facebook"],
+      },
+      adminNotes: { type: String },
+      customerType: {
+        type: String,
+        enum: ["new", "existing", "guest"],
+        default: "guest",
+      },
+      assignedSR: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
   },
   { timestamps: true }
 );

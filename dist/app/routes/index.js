@@ -14,6 +14,7 @@ const customer_route_1 = require("../modules/customer/customer.route");
 const dashboard_routes_1 = require("../modules/dashboard/dashboard.routes");
 const faq_route_1 = require("../modules/faq/faq.route");
 const order_route_1 = require("../modules/order/order.route");
+const admin_order_route_1 = require("../modules/order/admin-order.route");
 const orderStatus_route_1 = require("../modules/orderStatus/orderStatus.route");
 const product_routes_1 = require("../modules/product/product.routes");
 const salesHistory_routes_1 = require("../modules/salesHistory/salesHistory.routes");
@@ -80,6 +81,10 @@ const moduleRoutes = [
     {
         path: "/order",
         route: order_route_1.OrderRoutes,
+    },
+    {
+        path: "/admin/orders",
+        route: admin_order_route_1.AdminOrderRoutes,
     },
     {
         path: "/attribute",
