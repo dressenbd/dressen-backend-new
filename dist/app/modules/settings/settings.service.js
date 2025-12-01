@@ -69,6 +69,11 @@ const getDeliveryChargeFromDB = () => __awaiter(void 0, void 0, void 0, function
         throw new handleAppError_1.default(404, "Delivery charge not found!");
     return { deliveryCharge: settings.deliveryCharge };
 });
+// ✅ Get Facebook Pixel ID Only
+const getFacebookPixelIdFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const settings = yield settings_model_1.SettingsModel.findOne();
+    return { facebookPixelId: (settings === null || settings === void 0 ? void 0 : settings.facebookPixelId) || null };
+});
 // ✅ Update Settings
 // const updateSettingsOnDB = async (updatedData: Partial<TSettings>) => {
 //   const settings = await SettingsModel.findOne();
@@ -323,6 +328,7 @@ exports.settingsServices = {
     getContactAndSocialFromDB,
     getMobileMfsFromDB,
     getDeliveryChargeFromDB,
+    getFacebookPixelIdFromDB,
     updateSettingsOnDB,
     updateMfsSettingsOnDB,
     deleteBannerSliderFromDB,

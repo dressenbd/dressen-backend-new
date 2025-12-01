@@ -75,6 +75,7 @@ const settingsSchema = new Schema<TSettings>(
     },
 
     deliveryCharge: { type: Number, default: 0 },
+    facebookPixelId: { type: String },
 
     contactAndSocial: {
       address: { type: String },
