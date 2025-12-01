@@ -28,6 +28,7 @@ import { VendorRoutes } from "../modules/vendor/vendor.route";
 import { WithdrawalRoutes } from "./../modules/withdrawals/withdrawals.routes";
 
 import { steadfastRoutes } from "../modules/courier/steadfast.routes";
+import { promoCategoryRoutes } from "../modules/promoCategory/promoCategory.routes";
 
 const router = express.Router();
 
@@ -143,6 +144,10 @@ const moduleRoutes = [
   {
     path: "/steadfast",
     route: steadfastRoutes,
+  },
+  {
+    path: "/promo-category",
+    route: promoCategoryRoutes,
   },
 ];
 

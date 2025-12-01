@@ -26,7 +26,8 @@ const getAllProductFromDB = async (query: Record<string, unknown>) => {
     ProductModel.find()
       .populate("brandAndCategories.brand")
       .populate("brandAndCategories.categories")
-      .populate("brandAndCategories.tags"),
+      .populate("brandAndCategories.tags")
+      .populate("brandAndCategories.promoCategories"),
     query
   )
     .search(ProductSearchableFields)
@@ -54,7 +55,34 @@ const getProductsByDiscount = async (discount: number = 0) => {
   })
     .populate("brandAndCategories.brand")
     .populate("brandAndCategories.categories")
-    .populate("brandAndCategories.tags");
+    .populate("brandAndCategories.tags")
+    .populate("brandAndCategories.promoCategories");
+
+  return products;
+};
+
+const getProductsByPromoCategory = async (promoCategoryId: string) => {
+  const products = await ProductModel.find({
+    "brandAndCategories.promoCategories": promoCategoryId,
+    "description.status": "publish",
+  })
+    .populate("brandAndCategories.brand")
+    .populate("brandAndCategories.categories")
+    .populate("brandAndCategories.tags")
+    .populate("brandAndCategories.promoCategories");
+
+  return products;
+};
+
+const getAllPromoProducts = async () => {
+  const products = await ProductModel.find({
+    "brandAndCategories.promoCategories.0": { $exists: true },
+    "description.status": "publish",
+  })
+    .populate("brandAndCategories.brand")
+    .populate("brandAndCategories.categories")
+    .populate("brandAndCategories.tags")
+    .populate("brandAndCategories.promoCategories");
 
   return products;
 };
@@ -125,7 +153,8 @@ const getSingleProductFromDB = async (id: string) => {
   const result = await ProductModel.findById(id)
     .populate("brandAndCategories.brand")
     .populate("brandAndCategories.categories")
-    .populate("brandAndCategories.tags");
+    .populate("brandAndCategories.tags")
+    .populate("brandAndCategories.promoCategories");
   return result;
 };
 
@@ -271,6 +300,8 @@ export const productServices = {
   getSingleProductFromDB,
   getAllProductFromDB,
   getProductsByDiscount,
+  getProductsByPromoCategory,
+  getAllPromoProducts,
   updateProductOnDB,
   getProductsByCategoryandTag,
   deleteProduct,

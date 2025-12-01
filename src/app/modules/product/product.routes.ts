@@ -11,11 +11,15 @@ const router = express.Router();
 
 router.get("/", productControllers.getAllProduct);
 
-router.get("/:id", productControllers.getSingleProduct);
-
 router.get("/products/by", productControllers.getProductsByCategoryandTag);
 
 router.get("/discount", productControllers.getProductsByDiscount);
+
+router.get("/promo-products", productControllers.getAllPromoProducts);
+
+router.get("/promo-category/:promoCategoryId", productControllers.getProductsByPromoCategory);
+
+router.get("/:id", productControllers.getSingleProduct);
 
 router.post(
   "/create-product",
@@ -38,5 +42,6 @@ router.patch(
 );
 
 router.delete("/delete-product/:id", productControllers.deleteProduct);
+
 router.get("/inventory/stats", productControllers.inventoryStats);
 export const ProductRoutes = router;

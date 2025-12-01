@@ -32,6 +32,7 @@ const user_routes_1 = require("../modules/user/user.routes");
 const vendor_route_1 = require("../modules/vendor/vendor.route");
 const withdrawals_routes_1 = require("./../modules/withdrawals/withdrawals.routes");
 const steadfast_routes_1 = require("../modules/courier/steadfast.routes");
+const promoCategory_routes_1 = require("../modules/promoCategory/promoCategory.routes");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -145,6 +146,10 @@ const moduleRoutes = [
     {
         path: "/steadfast",
         route: steadfast_routes_1.steadfastRoutes,
+    },
+    {
+        path: "/promo-category",
+        route: promoCategory_routes_1.promoCategoryRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route === null || route === void 0 ? void 0 : route.path, route === null || route === void 0 ? void 0 : route.route));

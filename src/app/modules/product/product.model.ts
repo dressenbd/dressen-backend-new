@@ -32,6 +32,11 @@ const brandAndCategorySchema = new Schema<TBrandAndCategories>(
      subcategory: {
       type: String,
     },
+    promoCategories: {
+      type: [Schema.Types.ObjectId],
+      ref: "PromoCategory",
+      default: [],
+    },
   },
   { _id: false } // Prevents creating a separate _id for icon
 );
