@@ -321,5 +321,26 @@ const orderSchema = new mongoose_1.Schema({
         required: true,
     },
     orderNote: { type: String },
+    // Admin metadata for orders created by admin
+    adminMetadata: {
+        createdBy: {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "user",
+        },
+        orderSource: {
+            type: String,
+            enum: ["phone", "walk-in", "online", "whatsapp", "facebook"],
+        },
+        adminNotes: { type: String },
+        customerType: {
+            type: String,
+            enum: ["new", "existing", "guest"],
+            default: "guest",
+        },
+        assignedSR: {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "user",
+        },
+    },
 }, { timestamps: true });
 exports.OrderModel = (0, mongoose_1.model)("order", orderSchema);

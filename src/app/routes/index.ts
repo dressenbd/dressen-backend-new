@@ -9,6 +9,7 @@ import { CustomerRoutes } from "../modules/customer/customer.route";
 import { DashboardRoutes } from "../modules/dashboard/dashboard.routes";
 import { FaqRoutes } from "../modules/faq/faq.route";
 import { OrderRoutes } from "../modules/order/order.route";
+import { AdminOrderRoutes } from "../modules/order/admin-order.route";
 import { OrderStatusRoutes } from "../modules/orderStatus/orderStatus.route";
 import { ProductRoutes } from "../modules/product/product.routes";
 import { SalesHistoryRoutes } from "../modules/salesHistory/salesHistory.routes";
@@ -78,6 +79,10 @@ const moduleRoutes = [
   {
     path: "/order",
     route: OrderRoutes,
+  },
+  {
+    path: "/admin/orders",
+    route: AdminOrderRoutes,
   },
   {
     path: "/attribute",
