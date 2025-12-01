@@ -132,6 +132,17 @@ export const getDeliveryCharge = catchAsync(async (req, res) => {
   });
 });
 
+// ✅ Get Facebook Pixel ID
+export const getFacebookPixelId = catchAsync(async (req, res) => {
+  const result = await settingsServices.getFacebookPixelIdFromDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Facebook Pixel ID retrieved successfully!",
+    data: result,
+  });
+});
+
 // ✅ Delete Banner Slider
 export const deleteBannerSlider = catchAsync(async (req, res) => {
   const { imageUrl } = req.body;
@@ -286,5 +297,6 @@ export const settingsControllers = {
   getContactAndSocial,
   getMobileMfs,
   getDeliveryCharge,
+  getFacebookPixelId,
   deleteBannerSlider,
 };

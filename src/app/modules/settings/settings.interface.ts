@@ -43,6 +43,7 @@ export type TSettings = {
   };
 
   deliveryCharge?: number;
+  facebookPixelId?: string;
 
   mobileMfs?: {
     bKash?: TbKash;

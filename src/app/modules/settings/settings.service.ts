@@ -65,6 +65,12 @@ const getDeliveryChargeFromDB = async () => {
   return { deliveryCharge: settings.deliveryCharge };
 };
 
+// ✅ Get Facebook Pixel ID Only
+const getFacebookPixelIdFromDB = async () => {
+  const settings = await SettingsModel.findOne();
+  return { facebookPixelId: settings?.facebookPixelId || null };
+};
+
 // ✅ Update Settings
 
 // const updateSettingsOnDB = async (updatedData: Partial<TSettings>) => {
@@ -393,6 +399,7 @@ export const settingsServices = {
   getContactAndSocialFromDB,
   getMobileMfsFromDB,
   getDeliveryChargeFromDB,
+  getFacebookPixelIdFromDB,
   updateSettingsOnDB,
   updateMfsSettingsOnDB,
   deleteBannerSliderFromDB,

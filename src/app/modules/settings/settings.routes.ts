@@ -21,6 +21,7 @@ router.get("/slider-images", settingsControllers.getSliderImages);
 router.get("/contact-and-social", settingsControllers.getContactAndSocial);
 router.get("/mobile-mfs", settingsControllers.getMobileMfs);
 router.get("/delivery-charge", settingsControllers.getDeliveryCharge);
+router.get("/facebook-pixel-id", settingsControllers.getFacebookPixelId);
 router.post("/", uploadFields, settingsControllers.createSettings);
 router.patch("/", uploadFields, settingsControllers.updateSettings);
 // PATCH: update only MFS logos and numbers

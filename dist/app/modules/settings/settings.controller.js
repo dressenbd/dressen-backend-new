@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.settingsControllers = exports.deleteBannerSlider = exports.getDeliveryCharge = exports.getMobileMfs = exports.getContactAndSocial = exports.getSliderImages = exports.getLogo = void 0;
+exports.settingsControllers = exports.deleteBannerSlider = exports.getFacebookPixelId = exports.getDeliveryCharge = exports.getMobileMfs = exports.getContactAndSocial = exports.getSliderImages = exports.getLogo = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
@@ -114,6 +114,16 @@ exports.getDeliveryCharge = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         success: true,
         statusCode: http_status_1.default.OK,
         message: "Delivery charge retrieved successfully!",
+        data: result,
+    });
+}));
+// ✅ Get Facebook Pixel ID
+exports.getFacebookPixelId = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield settings_service_1.settingsServices.getFacebookPixelIdFromDB();
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Facebook Pixel ID retrieved successfully!",
         data: result,
     });
 }));
@@ -232,5 +242,6 @@ exports.settingsControllers = {
     getContactAndSocial: exports.getContactAndSocial,
     getMobileMfs: exports.getMobileMfs,
     getDeliveryCharge: exports.getDeliveryCharge,
+    getFacebookPixelId: exports.getFacebookPixelId,
     deleteBannerSlider: exports.deleteBannerSlider,
 };
