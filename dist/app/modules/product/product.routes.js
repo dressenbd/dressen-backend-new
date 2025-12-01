@@ -11,9 +11,11 @@ const product_controller_1 = require("./product.controller");
 const product_validations_1 = require("./product.validations");
 const router = express_1.default.Router();
 router.get("/", product_controller_1.productControllers.getAllProduct);
-router.get("/:id", product_controller_1.productControllers.getSingleProduct);
 router.get("/products/by", product_controller_1.productControllers.getProductsByCategoryandTag);
 router.get("/discount", product_controller_1.productControllers.getProductsByDiscount);
+router.get("/promo-products", product_controller_1.productControllers.getAllPromoProducts);
+router.get("/promo-category/:promoCategoryId", product_controller_1.productControllers.getProductsByPromoCategory);
+router.get("/:id", product_controller_1.productControllers.getSingleProduct);
 router.post("/create-product", multer_config_1.multerUpload.fields([
     { name: "galleryImagesFiles", maxCount: 20 },
     { name: "featuredImgFile", maxCount: 1 },

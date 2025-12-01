@@ -59,6 +59,25 @@ const getProductsByDiscount = (0, catchAsync_1.default)((req, res) => __awaiter(
         data: result,
     });
 }));
+const getProductsByPromoCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { promoCategoryId } = req.params;
+    const result = yield product_service_1.productServices.getProductsByPromoCategory(promoCategoryId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Products by promo category retrieved successfully!",
+        data: result,
+    });
+}));
+const getAllPromoProducts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_service_1.productServices.getAllPromoProducts();
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "All promotional products retrieved successfully!",
+        data: result,
+    });
+}));
 // const createProduct = catchAsync(async (req, res) => {
 //   const files = req.files as {
 //     [fieldname: string]: Express.Multer.File[];
@@ -134,6 +153,8 @@ exports.productControllers = {
     getSingleProduct,
     getAllProduct,
     getProductsByDiscount,
+    getProductsByPromoCategory,
+    getAllPromoProducts,
     updateProduct,
     getProductsByCategoryandTag,
     deleteProduct,

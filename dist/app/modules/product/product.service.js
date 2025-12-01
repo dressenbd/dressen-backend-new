@@ -36,7 +36,8 @@ const getAllProductFromDB = (query) => __awaiter(void 0, void 0, void 0, functio
     const productQuery = new QueryBuilder_1.default(product_model_1.ProductModel.find()
         .populate("brandAndCategories.brand")
         .populate("brandAndCategories.categories")
-        .populate("brandAndCategories.tags"), query)
+        .populate("brandAndCategories.tags")
+        .populate("brandAndCategories.promoCategories"), query)
         .search(product_const_1.ProductSearchableFields)
         .filter()
         .sort()
@@ -58,7 +59,30 @@ const getProductsByDiscount = (...args_1) => __awaiter(void 0, [...args_1], void
     })
         .populate("brandAndCategories.brand")
         .populate("brandAndCategories.categories")
-        .populate("brandAndCategories.tags");
+        .populate("brandAndCategories.tags")
+        .populate("brandAndCategories.promoCategories");
+    return products;
+});
+const getProductsByPromoCategory = (promoCategoryId) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield product_model_1.ProductModel.find({
+        "brandAndCategories.promoCategories": promoCategoryId,
+        "description.status": "publish",
+    })
+        .populate("brandAndCategories.brand")
+        .populate("brandAndCategories.categories")
+        .populate("brandAndCategories.tags")
+        .populate("brandAndCategories.promoCategories");
+    return products;
+});
+const getAllPromoProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield product_model_1.ProductModel.find({
+        "brandAndCategories.promoCategories.0": { $exists: true },
+        "description.status": "publish",
+    })
+        .populate("brandAndCategories.brand")
+        .populate("brandAndCategories.categories")
+        .populate("brandAndCategories.tags")
+        .populate("brandAndCategories.promoCategories");
     return products;
 });
 const getProductsByCategoryandTag = (category, tag) => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,7 +143,8 @@ const getSingleProductFromDB = (id) => __awaiter(void 0, void 0, void 0, functio
     const result = yield product_model_1.ProductModel.findById(id)
         .populate("brandAndCategories.brand")
         .populate("brandAndCategories.categories")
-        .populate("brandAndCategories.tags");
+        .populate("brandAndCategories.tags")
+        .populate("brandAndCategories.promoCategories");
     return result;
 });
 const updateProductOnDB = (id, updatedData) => __awaiter(void 0, void 0, void 0, function* () {
@@ -229,6 +254,8 @@ exports.productServices = {
     getSingleProductFromDB,
     getAllProductFromDB,
     getProductsByDiscount,
+    getProductsByPromoCategory,
+    getAllPromoProducts,
     updateProductOnDB,
     getProductsByCategoryandTag,
     deleteProduct,

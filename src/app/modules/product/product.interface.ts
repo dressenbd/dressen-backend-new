@@ -5,6 +5,7 @@ export type TBrandAndCategories = {
   categories: Types.ObjectId[];
   tags: Types.ObjectId[];
   subcategory?: string;
+  promoCategories?: Types.ObjectId[];
 };
 
 export type TDescription = {

@@ -26,6 +26,11 @@ const brandAndCategorySchema = new mongoose_1.Schema({
     subcategory: {
         type: String,
     },
+    promoCategories: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: "PromoCategory",
+        default: [],
+    },
 }, { _id: false } // Prevents creating a separate _id for icon
 );
 const commissionSchema = new mongoose_1.Schema({

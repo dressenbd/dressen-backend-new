@@ -1,9 +1,10 @@
 import httpStatus from "http-status";
+import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { productServices } from "./product.service";
 
-const getAllProduct = catchAsync(async (req, res) => {
+const getAllProduct = catchAsync(async (req: Request, res: Response) => {
   const result = await productServices.getAllProductFromDB(req.query);
 
   sendResponse(res, {
@@ -15,7 +16,7 @@ const getAllProduct = catchAsync(async (req, res) => {
   });
 });
 
-const getProductsByCategoryandTag = catchAsync(async (req, res) => {
+const getProductsByCategoryandTag = catchAsync(async (req: Request, res: Response) => {
   const { category, tag } = req.query;
 
   const result = await productServices.getProductsByCategoryandTag(
@@ -31,7 +32,7 @@ const getProductsByCategoryandTag = catchAsync(async (req, res) => {
   });
 });
 
-const getSingleProduct = catchAsync(async (req, res) => {
+const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await productServices.getSingleProductFromDB(id);
 
@@ -43,7 +44,7 @@ const getSingleProduct = catchAsync(async (req, res) => {
   });
 });
 
-const getProductsByDiscount = catchAsync(async (req, res) => {
+const getProductsByDiscount = catchAsync(async (req: Request, res: Response) => {
   const discount = req.query.discount ? Number(req.query.discount) : 0;
   const result = await productServices.getProductsByDiscount(discount);
 
@@ -54,6 +55,29 @@ const getProductsByDiscount = catchAsync(async (req, res) => {
       discount > 0
         ? `Products with discount ≥ ${discount}% retrieved successfully!`
         : "Products with any discount retrieved successfully!",
+    data: result,
+  });
+});
+
+const getProductsByPromoCategory = catchAsync(async (req: Request, res: Response) => {
+  const { promoCategoryId } = req.params;
+  const result = await productServices.getProductsByPromoCategory(promoCategoryId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Products by promo category retrieved successfully!",
+    data: result,
+  });
+});
+
+const getAllPromoProducts = catchAsync(async (req: Request, res: Response) => {
+  const result = await productServices.getAllPromoProducts();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All promotional products retrieved successfully!",
     data: result,
   });
 });
@@ -81,7 +105,7 @@ const getProductsByDiscount = catchAsync(async (req, res) => {
 //   });
 // });
 
-const createProduct = catchAsync(async (req, res) => {
+const createProduct = catchAsync(async (req: Request, res: Response) => {
   const files =
     (req.files as { [fieldname: string]: Express.Multer.File[] }) || {};
 
@@ -104,7 +128,7 @@ const createProduct = catchAsync(async (req, res) => {
   });
 });
 
-const updateProduct = catchAsync(async (req, res) => {
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const files = req.files as {
@@ -133,7 +157,7 @@ const updateProduct = catchAsync(async (req, res) => {
   });
 });
 
-const deleteProduct = catchAsync(async (req, res) => {
+const deleteProduct = catchAsync(async (req: Request, res: Response) => {
   await productServices.deleteProduct(req.params.id);
 
   sendResponse(res, {
@@ -144,7 +168,7 @@ const deleteProduct = catchAsync(async (req, res) => {
   });
 });
 
-const inventoryStats = catchAsync(async (req, res) => {
+const inventoryStats = catchAsync(async (req: Request, res: Response) => {
   const result = await productServices.inventoryStats(req.params.id);
 
   sendResponse(res, {
@@ -160,6 +184,8 @@ export const productControllers = {
   getSingleProduct,
   getAllProduct,
   getProductsByDiscount,
+  getProductsByPromoCategory,
+  getAllPromoProducts,
   updateProduct,
   getProductsByCategoryandTag,
   deleteProduct,
