@@ -140,6 +140,7 @@ import {
 import { generateOTP } from "../../utils/generate.otp";
 import { storeOTP, verifyOTP } from "../otp/otp.service";
 import { UserModel } from "../user/user.model";
+import { CustomerModel } from "../customer/customer.model";
 import { TAuth, TExternalProviderAuth } from "./auth.interface";
 
 /**
@@ -195,6 +196,11 @@ const registerUserOnDB = async (payload: TAuth) => {
   };
 
   const user = await UserModel.create(userData);
+
+  // ✅ Auto-create customer record
+  if (role === "customer") {
+    await CustomerModel.create({ userId: user._id });
+  }
 
   // ✅ Generate and store OTP
   const otp = generateOTP();
@@ -312,6 +318,11 @@ const loginUserUsingProviderFromDB = async (payload: TExternalProviderAuth) => {
     const status = activeRoles.includes(role) ? "active" : "pending";
 
     const result = await UserModel.create({ ...payload, role, status });
+
+    // ✅ Auto-create customer record for provider login
+    if (role === "customer") {
+      await CustomerModel.create({ userId: result._id });
+    }
 
     const jwtPayload = {
       userId: result._id,

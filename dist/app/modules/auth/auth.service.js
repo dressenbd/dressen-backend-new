@@ -127,6 +127,7 @@ const email_service_1 = require("../../utils/email.service");
 const generate_otp_1 = require("../../utils/generate.otp");
 const otp_service_1 = require("../otp/otp.service");
 const user_model_1 = require("../user/user.model");
+const customer_model_1 = require("../customer/customer.model");
 /**
  * Register user in the database
  * Sets default status based on user role:
@@ -168,6 +169,10 @@ const registerUserOnDB = (payload) => __awaiter(void 0, void 0, void 0, function
         role,
         status, isEmailVerified: false });
     const user = yield user_model_1.UserModel.create(userData);
+    // ✅ Auto-create customer record
+    if (role === "customer") {
+        yield customer_model_1.CustomerModel.create({ userId: user._id });
+    }
     // ✅ Generate and store OTP
     const otp = (0, generate_otp_1.generateOTP)();
     yield (0, otp_service_1.storeOTP)(email, "email_verification", otp, Number(process.env.OTP_TTL_SECONDS || 300));
@@ -237,6 +242,10 @@ const loginUserUsingProviderFromDB = (payload) => __awaiter(void 0, void 0, void
         const role = payload.role || "customer";
         const status = activeRoles.includes(role) ? "active" : "pending";
         const result = yield user_model_1.UserModel.create(Object.assign(Object.assign({}, payload), { role, status }));
+        // ✅ Auto-create customer record for provider login
+        if (role === "customer") {
+            yield customer_model_1.CustomerModel.create({ userId: result._id });
+        }
         const jwtPayload = {
             userId: result._id,
             email: result.email,
