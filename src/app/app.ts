@@ -18,9 +18,10 @@ app.use(cors({
     "https://dressen-customer.vercel.app",
     "https://dressen-admin-new.vercel.app",
     "https://dressenbd.com",
+    "https://www.dressenbd.com",
     "https://admin.dressenbd.com",
+    "https://www.admin.dressenbd.com",
     "http://localhost:3001",
-    "http://localhost:3003",
   ],
   credentials: true
 }));
