@@ -18,15 +18,21 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
-        "https://dressen-customer.vercel.app",
-        "https://dressen-admin-new.vercel.app",
-        "https://dressenbd.com",
-        "https://admin.dressenbd.com",
         "http://localhost:3001",
-        "http://localhost:3003",
+        "https://dressenbd.com",
+        "https://www.dressenbd.com",
+        "https://admin.dressenbd.com",
+        "https://www.admin.dressenbd.com",
     ],
     credentials: true
 }));
+// Prevent Vercel edge cache from caching CORS responses
+app.use((req, res, next) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    next();
+});
 app.use((0, express_session_1.default)({
     secret: config_1.default.EXPRESS_SESSION,
     resave: false,
